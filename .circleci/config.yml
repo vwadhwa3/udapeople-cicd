@@ -122,7 +122,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: unit test back end
+          name: audit back end
           command: |
              # Your code here
              cd backend

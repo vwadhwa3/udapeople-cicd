@@ -35,7 +35,7 @@ version: 2.1
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -53,7 +53,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -71,7 +71,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -86,7 +86,7 @@ jobs:
                 
   test-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -101,7 +101,7 @@ jobs:
             
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -109,28 +109,21 @@ jobs:
       - run:
           name: scan front end 
           command: |
-            # Your code here
-            cd frontend
-            npm install
-            npm audit fix --force --audit-level-critical
-            npm audit --audit level-critical
+            cd backend
+            npm audit fix --audit-level=critical --force
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
           keys: [backend-build]
       - run:
           name: scan back end
-          command:
-             # Your code here
-             cd ./backend
-             cd backend
-             npm install
-             npm audit fix --force --audit-level=critical
-             npm audit --audit-level=critical
+          command: |
+            cd backend
+            npm audit fix --audit-level=critical --force
 
 #   deploy-infrastructure:
 #     docker:
@@ -141,7 +134,7 @@ jobs:
 #           name: Ensure back-end infrastructure exists
 #           command: |
 #             aws cloudformation deploy \
-#               --template-file .circleci/files/backend.yml \
+#               --template-file .cimg/files/backend.yml \
 #               #--tags project=your-tag \
 #               # --stack-name "your back-end stack name with workflow id" \
 #               # --parameter-overrides ID="your workflow id"  
@@ -150,7 +143,7 @@ jobs:
 #           name: Ensure front-end infrastructure exist
 #           command: |
 #             aws cloudformation deploy \
-#               --template-file .circleci/files/frontend.yml \
+#               --template-file .cimg/files/frontend.yml \
 #               #--tags project=your-tag \
 #               # --stack-name "your front-end stack name with workflow id" \
 #               # --parameter-overrides ID="your workflow id"  
@@ -163,7 +156,7 @@ jobs:
 #       - persist_to_workspace:
 #           root: ~/
 #           paths:
-#             - project/.circleci/ansible/inventory.txt
+#             - project/.cimg/ansible/inventory.txt
 #       # Here's where you will add some code to rollback on failure      
 
 #   configure-infrastructure:

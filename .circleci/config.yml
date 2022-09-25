@@ -40,7 +40,14 @@ commands:
           event: fail
           channel: cicd-pipline
           template: basic_fail_1
-
+notify_on_success:
+    docker:
+      - image: cimg/base
+    steps:
+      - slack/notify:
+          event: pass
+          channel: cicd-pipline 
+          template: basic_success_1
 
 jobs:
   build-frontend:
@@ -303,15 +310,7 @@ jobs:
 #             then
 #               # your code here
 #             fi
-notify_on_success:
-    docker:
-      - image: cimg/base
-    steps:
-      - slack/notify:
-          event: pass
-          channel: cicd-pipline 
-          template: basic_success_1
-
+ 
 
 workflows:
   default:

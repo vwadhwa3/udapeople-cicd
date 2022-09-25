@@ -67,6 +67,7 @@ jobs:
           paths: [frontend/node_modules]
           key: frontend-build
       - notify_on_failure
+      - notify_slack_pass
 
   build-backend:
     docker:
@@ -86,6 +87,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
       - notify_on_failure
+      - notify_slack_pass
 
   test-frontend:
     docker:
@@ -102,6 +104,8 @@ jobs:
             npm install
             npm test
       - notify_on_failure
+      - notify_slack_pass
+
   test-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -117,6 +121,8 @@ jobs:
              npm install
              npm test
       - notify_on_failure
+      - notify_slack_pass
+
   scan-frontend:
     docker:
       - image: cimg/node:13.8.0
@@ -130,6 +136,7 @@ jobs:
             cd backend
             npm audit fix --audit-level=critical --force
       - notify_on_failure
+      - notify_slack_pass
 
   scan-backend:
     docker:
@@ -144,6 +151,7 @@ jobs:
             cd backend
             npm audit fix --audit-level=critical --force
       - notify_on_failure
+      - notify_slack_pass
 
 #   deploy-infrastructure:
 #     docker:
@@ -324,12 +332,6 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - notify_on_pass:
-          requires:
-            - test-frontend
-            - test-backend
-            - scan-backend
-            - scan-frontend
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:

@@ -41,8 +41,6 @@ commands:
           channel: cicd-pipline
           template: basic_fail_1
 notify_on_success:
-    docker:
-      - image: cimg/base
     steps:
       - slack/notify:
           event: pass

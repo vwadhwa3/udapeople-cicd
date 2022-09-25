@@ -127,6 +127,8 @@ jobs:
           command:
              # Your code here
              cd backend
+             npm install
+             npm audit fix --force
              npm audit fix --force
              npm audit --audit-level=critical
 

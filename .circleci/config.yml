@@ -1,6 +1,10 @@
 version: 2.1
 
-# commands:
+orbs:
+  slack: circleci/slack@4.3.0
+
+commands:
+  notify_on_failure:
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
 #     parameters:
@@ -31,7 +35,14 @@ version: 2.1
 #             #  Add revert code here. You can find this in the Getting Started section.
 #               exit 1
 #             fi
-            
+  notify_on_failure:
+    steps:
+      -slack/notify:
+        event: fail
+        channel: cicd-pipline
+        template: basic_fail_1
+
+
 jobs:
   build-frontend:
     docker:
@@ -50,6 +61,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - notify_on_failure
 
   build-backend:
     docker:
@@ -68,6 +80,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - notify_on_failure
 
   test-frontend:
     docker:
@@ -83,7 +96,7 @@ jobs:
             cd frontend
             npm install
             npm test
-                
+      - notify_on_failure
   test-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -98,7 +111,7 @@ jobs:
              cd backend
              npm install
              npm test
-            
+      - notify_on_failure
   scan-frontend:
     docker:
       - image: cimg/node:13.8.0
@@ -111,6 +124,7 @@ jobs:
           command: |
             cd backend
             npm audit fix --audit-level=critical --force
+      - notify_on_failure
 
   scan-backend:
     docker:
@@ -124,6 +138,7 @@ jobs:
           command: |
             cd backend
             npm audit fix --audit-level=critical --force
+      - notify_on_failure
 
 #   deploy-infrastructure:
 #     docker:
@@ -289,7 +304,15 @@ jobs:
 #             then
 #               # your code here
 #             fi
-            
+notify_on_success:
+    docker:
+      - image: cimg/base
+    steps:
+      - slack/notify:
+          event: pass
+          channel: cicd-pipline 
+          template: basic_success_1
+
 
 workflows:
   default:
@@ -304,6 +327,12 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+      - notify_on_success:
+          requires:
+            - test-frontend
+            - test-backend
+            - scan-backend
+            - scan-frontend
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:

@@ -419,7 +419,7 @@ jobs:
       - destroy-environment
       - revert-migrations
  
-
+ 
   cleanup:
     docker:
       - image: cimg/base:stable
@@ -480,4 +480,3 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
-          

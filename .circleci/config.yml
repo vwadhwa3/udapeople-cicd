@@ -380,7 +380,7 @@ jobs:
               then
                 exit 0
               else
-                exit 5
+                exit 1
               fi
       - run:
           name: Frontend smoke test.
